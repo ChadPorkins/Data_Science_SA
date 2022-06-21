@@ -42,7 +42,7 @@ kaboom4 = ggplot(kaboom2, aes(x = longitude, y = latitude)) +
      ) +
      geom_point(
        data = kaboom2,
-       aes(longitude, latitude, color = "red2"),
+       aes(longitude, latitude),
        alpha = 0.7
      ) 
    ######################3
