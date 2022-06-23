@@ -62,3 +62,4 @@ kaboom4 = ggplot(kaboom2, aes(x = longitude, y = latitude)) +
      coord_equal() + 
      xlab('longitude') + 
      ylab('latitude')
+   
