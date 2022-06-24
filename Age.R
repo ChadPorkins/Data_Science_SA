@@ -8,7 +8,7 @@ library(AID)
 
 
 
-  attacks = as_tibble(attacks) %>%
+attacks = as_tibble(attacks) %>%
   select(event_id,wounded_low,wounded_high,killed_low,killed_high) %>%
   filter(wounded_low >= 0) %>%
   filter(wounded_high >= 0) %>%
@@ -16,7 +16,9 @@ library(AID)
   filter(killed_high >= 0) %>%
   mutate(wounded_average = round(((wounded_low + wounded_high)/2) )) %>%
   mutate(killed_average = round(((killed_low + killed_high)/2) )) %>% 
-  select(event_id,wounded_average,killed_average)
+  mutate(casualties = wounded_average + killed_average) %>%
+  filter(casualties >= 1) %>%
+  select(event_id,wounded_average,killed_average,casualties)
  
    attacks = attacks %>%
     mutate(sk = row_number())
@@ -133,3 +135,8 @@ attacks_test = apply(attacks, 2, jarque.bera.test)
 attacks_test = do.call(rbind.data.frame, attacks_test)
 attacks_test = subset(attacks_test, select = -c(1,2,4,5) )
 print(attacks_test > 0.05)
+
+attacks6 = attacks %>%
+  filter(casualties<30)
+
+agostino.test(attacks6$killed_average)
