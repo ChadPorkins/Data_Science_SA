@@ -128,3 +128,8 @@ shapiro.test(very_common1$casualties)
 agostino.test(c(x,y))
 agostino.test(very_common1$casualties)
 shapiro.test(attacks_count$n)
+
+attacks_test = apply(attacks, 2, jarque.bera.test)
+attacks_test = do.call(rbind.data.frame, attacks_test)
+attacks_test = subset(attacks_test, select = -c(1,2,4,5) )
+print(attacks_test > 0.05)
