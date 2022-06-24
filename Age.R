@@ -4,6 +4,7 @@ library(tseries)
 library(car)
 library(moments)
 library(writexl)
+library(AID)
 
 
 
@@ -13,8 +14,8 @@ library(writexl)
   filter(wounded_high >= 0) %>%
   filter(killed_low >= 0) %>%
   filter(killed_high >= 0) %>%
-  mutate(wounded_average = ((wounded_low + wounded_high)/2) ) %>%
-  mutate(killed_average = ((killed_low + killed_high)/2) ) %>% 
+  mutate(wounded_average = round(((wounded_low + wounded_high)/2) )) %>%
+  mutate(killed_average = round(((killed_low + killed_high)/2) )) %>% 
   select(event_id,wounded_average,killed_average)
  
    attacks = attacks %>%
@@ -90,11 +91,40 @@ qqPlot(y2, id= FALSE)
 #########################################################
 attacks3 = attacks %>%
   mutate(casualties = wounded_average + killed_average) %>%
-  filter(casualties >= 1) %>%
-  mutate(casualties2 = log(casualties) ,base = exp(2))
+  filter(casualties >= 1) 
+
+attacks_count =  count(attacks3,casualties, sort = TRUE)
+hist(attacks_count$n)
 
 ###################################################
 
-qqPlot(attacks3$casualties2, id= FALSE)
+qqPlot(attacks3$casualties, id= FALSE)
 jarque.bera.test(attacks3$casualties2)
-hist(attacks3$casualties2)
+hist(attacks3$casualties, breaks = 1000)
+#################################################
+attacks4 = attacks3 %>%
+  filter( casualties %in% 1:3)
+hist(attacks4$casualties, breaks = 3)
+
+qqPlot(attacks4$casualties, id= FALSE)
+shapiro.test(attacks4$casualties)
+qqPlot(sqrt(attacks4$casualties), id= FALSE)
+qqPlot(attacks4$zscore, id= FALSE)
+
+library(AID)
+data = very_common1$casualties
+out <- boxcoxnc(data, method = "sw", lambda = seq(-2,2,0.0001), verbose = F, plot = F)
+out$lambda.hat
+qqPlot(out$tf.data)
+out <- boxcoxnc(data, method = "mle", lambda = seq(-2,2,0.0001))
+################################################################################
+very_common1  =  filter(attacks3, casualties %in% c(2, 4,24,22,18,20,17,16,15,13,14,11,12,9,1,7,10,8,3,5,6))
+very_common1  =  filter(attacks3, casualties %in% c(2, 4))
+hist(very_common1$casualties)
+hist(sqrt(very_common1$casualties))
+shapiro.test(very_common1$casualties)
+shapiro.test(very_common1$casualties)
+
+agostino.test(c(x,y))
+agostino.test(very_common1$casualties)
+shapiro.test(attacks_count$n)
