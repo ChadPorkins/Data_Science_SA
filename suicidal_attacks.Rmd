@@ -86,10 +86,10 @@ attacks = as_tibble(attacks) %>%
   filter(wounded_high >= 0) %>%
   filter(killed_low >= 0) %>%
   filter(killed_high >= 0) %>%
-  mutate(wounded_average = round(((wounded_low + wounded_high)/2) )) %>%
-  mutate(killed_average = round(((killed_low + killed_high)/2) )) %>% 
+  mutate(wounded_average = ((wounded_low + wounded_high)/2) ) %>%
+  mutate(killed_average = ((killed_low + killed_high)/2) ) %>% 
   mutate(casualties = wounded_average + killed_average) %>%
-  filter(casualties >= 1) %>%
+  filter(casualties >= 0) %>%
   select(event_id,wounded_average,killed_average,casualties)
  head(attacks)
 ```
@@ -121,7 +121,7 @@ qqPlot(attacks$casualties, id= FALSE)
 par(mfrow = c(1,3))
 hist(sqrt(attacks$wounded_average + 1 ))
 hist(sqrt(attacks$killed_average + 1 ))
-hist(sqrt(attacks$casualties))
+hist(sqrt(attacks$casualties + 1))
 
 ```
 
@@ -131,7 +131,7 @@ hist(sqrt(attacks$casualties))
 par(mfrow = c(1,3))
 hist(log10(attacks$wounded_average + 1 ))
 hist(log10(attacks$killed_average + 1 ))
-hist(log10(attacks$casualties))
+hist(log10(attacks$casualties + 1 ))
 
 ```
 
@@ -140,14 +140,14 @@ hist(log10(attacks$casualties))
 par(mfrow = c(1,3))
 hist(1/(attacks$wounded_average + 1 ))
 hist(1/(attacks$killed_average + 1 ))
-hist(1/(attacks$casualties))
+hist(1/(attacks$casualties + 1))
 
 ```
 
 ## log 10 looks like nomal disterbution, but whats the problem?
 
 ```{r}
-agostino.test(log10(attacks$casualties))
+agostino.test(log10(attacks$casualties+1))
 ```
 
 too many repetitions
@@ -186,7 +186,7 @@ attackers = attackers %>%
 ```{r}
 male_attackers = attackers %>%
 filter(gender == "Male") %>%
-left_join(attacks, by =  "event_id") %>%
+inner_join(attacks, by =  "event_id") %>%
 select(age_time_death,wounded_average,killed_average,casualties)
 head(male_attackers)
 
