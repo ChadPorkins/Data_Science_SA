@@ -28,7 +28,9 @@ why its impotent
 
 ## litetature 
 
-##hypothesis
+dasdasddddd
+
+## hypothesis
 
 ## Suicidal attacks global or middle eastern problem?
 
@@ -211,4 +213,5 @@ res3
 res4= glm(casualties ~  age_time_death, data = male_attackers , family = "poisson"	)
 summary(res4)
 ```
+
 
