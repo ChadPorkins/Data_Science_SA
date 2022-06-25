@@ -1,6 +1,6 @@
 ---
 title: "Data science project - Suicidial attacks"
-author: "Mr. Jakob Alderson & MR. Tal Bracha"
+author: "Mr.Jakob Alderson & Mr.Tal Bracha"
 date: "`r Sys.Date()`"
 output:
   prettydoc::html_pretty:
@@ -58,7 +58,7 @@ world <- map_data("world")
      ) 
 ```
 
-Point density:
+Points density:
 ```{r}
 ggplot(points, aes(x = longitude, y = latitude)) + 
      geom_point() + 
@@ -73,16 +73,16 @@ ggplot(points, aes(x = longitude, y = latitude)) +
 
 The middle east  is the brightest
 
-## Data Cleaning and Normaliry
+## Data Cleaning and Normaliry transformation:
 
-Before cleanig:
+Before cleaning:
 
 ```{r}
 attacks = read.csv("attacks.csv")
 head(as_tibble(attacks))
 ```
  
-After some data organization:
+After some data cleaning:
 ```{r}
 attacks = as_tibble(attacks) %>%
   select(event_id,wounded_low,wounded_high,killed_low,killed_high) %>%
@@ -93,12 +93,12 @@ attacks = as_tibble(attacks) %>%
   mutate(wounded_average = ceiling(((wounded_low + wounded_high)/2) )) %>%
   mutate(killed_average = ceiling(((killed_low + killed_high)/2) )) %>% 
   mutate(casualties = wounded_average + killed_average) %>%
-  filter(casualties < 1000) %>%
+  filter(casualties < 500) %>%
   select(event_id,wounded_average,killed_average,casualties)
  head(attacks)
 ```
 
-## normality visualtization 
+## Normality visualtization:
 
 ```{r}
 par(mfrow = c(1,3))
@@ -108,7 +108,7 @@ hist(attacks$casualties, breaks = length(attacks$casualties))
 
 ```
 
-The data is Poisson distributions, we have a massive possite right skew 
+The data has Poisson distribution, we have a massive positive right skew 
 
 ```{r}
 par(mfrow = c(1,3))
@@ -119,7 +119,7 @@ qqPlot(attacks$casualties, id= FALSE)
 
 
 
-## sqrt data transform 
+## Square root data transformation:
 
 ```{r}
 par(mfrow = c(1,3))
@@ -129,7 +129,7 @@ hist(sqrt(attacks$casualties + 1))
 
 ```
 
-## log data transform  
+## Log(10) data transformation: 
 
 ```{r}
 par(mfrow = c(1,3))
@@ -139,7 +139,8 @@ hist(log10(attacks$casualties + 1 ))
 
 ```
 
-## inverse data transform 
+## Inverse data transformation:
+
 ```{r}
 par(mfrow = c(1,3))
 hist(1/(attacks$wounded_average + 1 ))
@@ -148,13 +149,17 @@ hist(1/(attacks$casualties + 1))
 
 ```
 
-## log 10 looks like nomal disterbution, but whats the problem?
+## log 10 looks like normal distribution, but what’s the problem?
 
 ```{r}
 agostino.test(log10(attacks$casualties+1))
 ```
 
-too many repetitions
+## too many repetitions! 
+
+```{r}
+qqPlot(log10(attacks$casualties+1),id= FALSE)
+```
 
 
 ```{r}
@@ -169,16 +174,15 @@ attacks2 = attacks %>%
 ```
 
 We did our best but you cant transform poisson distribution with low lambda
-#https://bookdown.org/ndphillips/YaRrr/regression-on-non-normal-data-with-glm.html
 
-## some corroletion!
+## Age and Suicidal Attacks correlation and regression 
 
 ```{r}
 attackers = read.csv("attackers.csv") 
 head( as_tibble(attackers) )
 ```
 
-## some tidy
+ 
 ```{r}
 attackers = attackers %>%
   as_tibble() %>%
@@ -187,33 +191,111 @@ attackers = attackers %>%
   head(attackers)
 ```
 
+## Male correlation  
 ```{r}
 male_attackers = attackers %>%
 filter(gender == "Male") %>%
 inner_join(attacks, by =  "event_id") %>%
-select(age_time_death,wounded_average,killed_average,casualties)
+select(age_time_death,wounded_average,killed_average,casualties,gender)
 head(male_attackers)
 
 ```
 
 ```{r}
 res<-cor.test(male_attackers$age_time_death,male_attackers$wounded_average, method="kendall")
-res
+res$p.value
 ```
 
 ```{r}
 res2<-cor.test(male_attackers$age_time_death,male_attackers$killed_average, method="kendall")
-res2
+res2$p.value
 ```
 
 ```{r}
 res3<-cor.test(male_attackers$age_time_death,male_attackers$casualties, method="kendall")
-res3
+res3$p.value
 ```
+
+
+## Male regression  
 
 ```{r}
 res4= glm(casualties ~  age_time_death, data = male_attackers , family = "poisson"	)
 summary(res4)
 ```
 
+## Female correlation 
+
+```{r}
+female_attackers = attackers %>%
+filter(gender == "Female") %>%
+inner_join(attacks, by =  "event_id") %>%
+select(age_time_death,wounded_average,killed_average,casualties,gender)
+head(female_attackers)
+```
+
+```{r}
+fes<-cor.test(female_attackers$age_time_death,female_attackers$wounded_average, method="kendall")
+fes$p.value
+```
+
+```{r}
+fes2<-cor.test(female_attackers$age_time_death,female_attackers$killed_average, method="kendall")
+fes2$p.value
+```
+
+```{r}
+fes3<-cor.test(female_attackers$age_time_death,female_attackers$casualties, method="kendall")
+fes3$p.value
+```
+
+## Female regression 
+
+```{r}
+fes4= glm(killed_average ~  age_time_death, data = female_attackers , family = "poisson"	)
+summary(fes4)
+```
+
+## Male vs Female - wounded average
+
+```{r, message=FALSE}
+both_gender1 = bind_rows(male_attackers,female_attackers) %>%
+  select(gender,wounded_average )
+test <- wilcox.test(both_gender1$wounded_average ~ both_gender1$gender)
+test$p.value
+```
+
+```{r}
+ggplot(both_gender1, aes(x= wounded_average, color=gender)) +
+  geom_histogram(fill="white")
+```
+
+## Male vs Female - killed average
+```{r, message=FALSE}
+both_gender2 = bind_rows(male_attackers,female_attackers) %>%
+  select(gender,killed_average )
+test2 <- wilcox.test(both_gender2$killed_average ~ both_gender2$gender)
+test2$p.value
+```
+
+```{r, message=FALSE}
+ggplot(both_gender2, aes(x= killed_average, color=gender)) +
+  geom_histogram(fill="white")
+```
+
+## Male vs Female - Casualties
+
+
+```{r}
+both_gender3 = bind_rows(male_attackers,female_attackers) %>%
+  select(gender,casualties )
+test3 <- wilcox.test(both_gender3$casualties ~ both_gender3$gender)
+test3$p.value
+
+```
+
+```{r, message=FALSE}
+ggplot(both_gender3, aes(x= casualties, color=gender)) +
+  geom_histogram(fill="white")
+```
 
