@@ -35,7 +35,9 @@ The main reasons suicide attacks are particularly important to research are:
   
   *Suicide attacks also increase recruitment by demonstrating the group's ideological commitment.
 
+## Research question 
 
+What is the connection between human capital and the lethality of suicidal attacks? 
 
 ## litetature 1 - Human Capital and the Productivity of Suicide Bombers
 
@@ -70,9 +72,6 @@ The author advances five main claims:
 
 5)She concludes that, unless target states adapt their defensive strategies, we should expect an increase in female suicide terrorism.
 
-## Research question 
-
-What is the connection between human capital and the lethality of suicidal attacks? 
 
 ## Suicidal attacks global or middle eastern problem?
 
@@ -148,7 +147,7 @@ hist(attacks$casualties, breaks = length(attacks$casualties))
 
 ```
 
-The data has Poisson distribution, we have a massive positive right skew 
+The data is in Poisson distribution, we have a massive positive right skew. 
 
 ```{r}
 par(mfrow = c(1,3))
@@ -298,14 +297,14 @@ summary(fes4)
 
 ## Male vs Female - wounded average
 
-```{r, message=FALSE}
+```{r, }
 both_gender1 = bind_rows(male_attackers,female_attackers) %>%
   select(gender,wounded_average )
 test <- wilcox.test(both_gender1$wounded_average ~ both_gender1$gender)
 test$p.value
 ```
 
-```{r}
+```{r, message=FALSE}
 ggplot(both_gender1, aes(x= wounded_average, color=gender)) +
   geom_histogram(fill="white")
 ```
