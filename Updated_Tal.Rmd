@@ -50,17 +50,17 @@ The main reasons suicide attacks are particularly important to research are:
 
 Is there a connection between human capital and the lethality of suicidal attacks? 
 
-According to the literature we excepct to see that incdices like sex, age and socioeconomic status will affect the leathality of suicidal attacks.
+According to the literature we except to see that indices like sex, age and socioeconomic status will affect the leathality of suicidal attacks.
 
 we expect that there is a strong relationship between older age and higher unemployment rate to the leathality of suicide attacks.  In particular
 woman will more leathel than men.
 
 
-In addition we excpect to see a raise in popularity of female suicide attacks,and we excpect women to use more consiled weapons than men like belt bomb.
+In addition we expect to see a raise in popularity of female suicide attacks,and we excpect women to use more consiled weapons than men like belt bomb.
 
 ## Our database
 
-In our project we used "The Database on Suicide Attacks (DSAT)" from the university of Chicago it contains specific information for all suicide attacks committed in modern history, from 1982 through 2019. Event records in the DSAT are highly detailed and coded for over 60 variables (not including source information).
+In our project we used "The Database on Suicide Attacks (DSAT)" from the university of Chicago it contains specific information for all suicide attacks committed in modern history, from 1982 to 2019. Event records in the DSAT are highly detailed and coded for over 60 variables (not including source information).
 
 The variables are divided into five broad categories:
 
@@ -118,6 +118,8 @@ They concluded that poor economic conditions and high unemployment enable terror
 
 In this research Thomas(2021) shows that the gender of the attackers and the gender norms in the country they made the attack influence the leathality of the attack using data on individual suicide attacks from 1985 to 2015.
 She concluded that women are more lethal than men when it comes to suicide attacks but only in countries with restrictive gender norms and practices because in those countries women seen as pacific and apolitical therefore they dont seen as a threat by the people. And in country where women seen as equal to men they didn't have a edge when it comes to the leathality of the attack.
+
+Moreover, Terrorists have also exploited the association between motherhood and innocence by deploying expectant mothers or women pretending to be pregnant in suicide attacks, by being pregnant or faking to be pregnant women are able to conceal their weapon (like vests and belts) more effectively also some scholars suggest that pregnancy may further discourage frisks, providing female terrorists greater cover.
 
 ## Suicidal attacks global or middle eastern problem?
 
