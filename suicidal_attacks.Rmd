@@ -228,8 +228,10 @@ head( as_tibble(attackers) )
 ```{r}
 attackers_new = attackers %>%
   as_tibble() %>%
-  select(event_id,attacker_id,age_time_death,gender,birth_admin0_txt) %>%
-  filter(age_time_death > 0) 
+  select(event_id,attacker_id,age_time_death,gender,birth_admin0_txt,) %>%
+  rename(birth_city = birth_admin0_txt) %>%
+  filter(age_time_death > 0) %>%
+  filter(gender %in% c("Male" , "Female") )
   head(attackers_new)
 ```
 
@@ -238,7 +240,7 @@ attackers_new = attackers %>%
 male_attackers = attackers_new %>%
 filter(gender == "Male") %>%
 inner_join(attacks, by =  "event_id") %>%
-select(age_time_death,wounded_average,killed_average,casualties,gender)
+select(age_time_death,wounded_average,killed_average,casualties,gender,birth_city)
 head(male_attackers)
 
 ```
@@ -272,7 +274,7 @@ summary(res4)
 female_attackers = attackers_new %>%
 filter(gender == "Female") %>%
 inner_join(attacks, by =  "event_id") %>%
-select(age_time_death,wounded_average,killed_average,casualties,gender)
+select(age_time_death,wounded_average,killed_average,casualties,gender,birth_city)
 head(female_attackers)
 ```
 
@@ -353,7 +355,7 @@ ggplot(data = male_attackers) +
 ```{r}
 options(dplyr.print_max = 1e9)
 attackers_new %>%
-  group_by(birth_admin0_txt) %>% 
+  group_by(birth_city) %>% 
   summarise(n = n()) %>%
   arrange(desc(n))
 
@@ -380,9 +382,14 @@ leaflet(data = points) %>%
 
 
 ```{r}
-attacks3 = attacks %>%
-  select(date_year, event_id) %>%
-  count(event_id)
+attacks_graph = attacks %>%
+left_join(attackers_new, by =  "event_id") %>%
+select(event_id,date_year,gender)
+
+attacks_graph2 = attacks_graph  %>% 
+  count(date_year)
+attacks_graph2
+
+ggplot(data=attacks_graph2, aes(x=date_year, y=n)) +
+  geom_bar(stat="identity")
 ```
-
-
