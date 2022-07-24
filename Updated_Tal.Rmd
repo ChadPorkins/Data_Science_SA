@@ -58,7 +58,21 @@ woman will more leathel than men.
 
 In addition we excpect to see a raise in popularity of female suicide attacks,and we excpect women to use more consiled weapons than men like belt bomb.
 
-leathality women age, consiled weapon, unemployment > lethality
+## Our database
+
+In our project we used "The Database on Suicide Attacks (DSAT)" from the university of Chicago it contains specific information for all suicide attacks committed in modern history, from 1982 through 2019. Event records in the DSAT are highly detailed and coded for over 60 variables (not including source information).
+
+The variables are divided into five broad categories:
+
+1.Basic information, including attack location, date, and casualty counts.
+
+2.Target information, including target type category (security / political / civilian) and their relation to state or international infrastructure.
+
+3.Attacker biographical information, including attacker name, age, gender, nationality, and religious affiliation.
+
+4.Claim information, including a list of groups that explicitly claim or deny credit for an attack, as well as groups suspected of involvement.
+
+5.Sources, including texts of news articles and wire service alerts used in coding the attack.
 
 ## Litetature 1 - Human Capital and the Productivity of Suicide Bombers
 
