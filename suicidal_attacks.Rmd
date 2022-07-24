@@ -19,6 +19,7 @@ library(car)
 library(moments)
 library(writexl)
 library(AID)
+library(leaflet)
 ```
 
 
@@ -223,16 +224,16 @@ head( as_tibble(attackers) )
 
  
 ```{r}
-attackers = attackers %>%
+attackers_new = attackers %>%
   as_tibble() %>%
   select(event_id,attacker_id,age_time_death,gender,birth_admin0_txt) %>%
   filter(age_time_death > 0) 
-  head(attackers)
+  head(attackers_new)
 ```
 
 ## Male correlation  
 ```{r}
-male_attackers = attackers %>%
+male_attackers = attackers_new %>%
 filter(gender == "Male") %>%
 inner_join(attacks, by =  "event_id") %>%
 select(age_time_death,wounded_average,killed_average,casualties,gender)
@@ -266,7 +267,7 @@ summary(res4)
 ## Female correlation 
 
 ```{r}
-female_attackers = attackers %>%
+female_attackers = attackers_new %>%
 filter(gender == "Female") %>%
 inner_join(attacks, by =  "event_id") %>%
 select(age_time_death,wounded_average,killed_average,casualties,gender)
@@ -337,4 +338,42 @@ test3$p.value
 ggplot(both_gender3, aes(x= casualties, color=gender)) +
   geom_histogram(fill="white")
 ```
+
+```{r}
+ggplot(data = male_attackers) + 
+      geom_point(mapping = aes(x = age_time_death, y = casualties)) +
+      geom_smooth(mapping = aes(x = age_time_death, y = casualties)) 
+      
+
+```
+
+## compare  other poeple 
+```{r}
+options(dplyr.print_max = 1e9)
+attackers_new %>%
+  group_by(birth_admin0_txt) %>% 
+  summarise(n = n()) %>%
+  arrange(desc(n))
+
+```
+
+```{r}
+library(tidyverse)
+library(leaflet)
+
+leaflet(data = points) %>%
+  addTiles() %>%
+  addMarkers(lat=points$latitude, lng=points$longitude, clusterOptions = markerClusterOptions(),
+             popup= paste("<strong>Date: </strong>", points$date_day,"/",points$date_month,"/", points$date_year,
+                          "<br><br><strong>Place: </strong>", points$city_txt,"-",points$admin0_txt,
+                          "<br><strong>Killed_low_estimate: </strong>", points$killed_low,
+                          "<br><strong>Killed_high_estimate: </strong>", points$killed_high,
+                          "<br><strong>wounded_low_estimate: </strong>", points$wounded_low,
+                          "<br><strong>wounded_high_estimate: </strong>", points$wounded_high,
+                          "<br><strong>wepon: </strong>", points$weapon_txt
+                          
+                          
+             ))
+```
+
 
