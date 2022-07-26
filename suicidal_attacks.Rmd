@@ -384,12 +384,10 @@ leaflet(data = points) %>%
 ```{r}
 attacks_graph = attacks %>%
 left_join(attackers_new, by =  "event_id") %>%
-select(event_id,date_year,gender)
+select(event_id,date_year,gender,country)  %>%
+group_by(gender) %>%
+summarise(count(date_year))  
+attacks_graph 
 
-attacks_graph2 = attacks_graph  %>% 
-  count(date_year)
-attacks_graph2
 
-ggplot(data=attacks_graph2, aes(x=date_year, y=n)) +
-  geom_bar(stat="identity")
 ```
