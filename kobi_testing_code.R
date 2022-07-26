@@ -189,3 +189,4 @@ summary(t5)
 
 z = attackers %>% 
   filter(birth_admin0_txt == "Palestine")
+dsdssds
