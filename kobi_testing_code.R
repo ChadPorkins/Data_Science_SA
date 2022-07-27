@@ -1,5 +1,5 @@
 attacks = read.csv("attacks.csv")
-attacks = as_tibble(attacks) %>%
+attacks_new = as_tibble(attacks) %>%
   select(event_id,wounded_low,wounded_high,killed_low,killed_high,admin0_txt,date_year,weapon_txt) %>%
   filter(wounded_low >= 0) %>%
   filter(wounded_high >= 0) %>%
@@ -190,3 +190,61 @@ summary(t5)
 z = attackers %>% 
   filter(birth_admin0_txt == "Palestine")
 dsdssds
+
+library(nortest)
+ad.test(log10(attacks_new$casualties+1))
+ad.test(attacks$casualties+1)
+ad.test(log(attacks$casualties+1))
+a = attacks %>%
+  filter(casualties < 100)
+
+b = attacks %>%
+  filter(casualties < 200 & casualties > 100 )
+c = attacks %>%
+  filter(casualties < 300 & casualties > 200 )
+d = attacks %>%
+  filter(casualties < 400 & casualties > 300 )
+e = attacks %>%
+  filter(casualties < 500 & casualties > 400)
+f =  attacks %>%
+  filter(casualties < 300 & casualties > 250)
+g =  attacks %>%
+  filter(casualties < 350 & casualties > 300)
+h =  attacks %>%
+  filter(casualties < 400 & casualties > 350)
+i= attacks %>%
+  filter(casualties < 450 & casualties > 400)
+
+j=attacks %>%
+  filter(casualties < 500 & casualties > 450)
+
+
+
+mean(a$casualties) var(a$casualties)
+mean(b$casualties) var(b$casualties)
+mean(c$casualties) var(c$casualties)
+mean(d$casualties) var(d$casualties)
+mean(e$casualties) var(e$casualties)
+
+mean1 = c(17.4095,
+         137.9321,
+         237.1207,
+         338,
+         452.8
+)
+
+var1  = c(379.039,
+         749.7151,
+         799.3711,
+         974.4286,
+         1298.622
+) 
+
+df <- data.frame(mean1, var1)
+
+library(ggpmisc)
+ggplot(data = df, aes(x = mean1, y = var1)) +
+  stat_poly_line() +
+  stat_poly_eq(aes(label = after_stat(eq.label))) +
+  stat_poly_eq(label.y = 0.9) +
+  geom_point()
