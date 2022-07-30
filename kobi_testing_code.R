@@ -1,3 +1,12 @@
+library(tidyverse)
+library(tseries)
+library(car)
+library(moments)
+library(AID)
+library(leaflet)
+library(hrbrthemes)
+library(ggpubr)
+library(ggpmisc)
 attacks = read.csv("attacks.csv")
 attacks_new = as_tibble(attacks) %>%
   select(event_id,wounded_low,wounded_high,killed_low,killed_high,admin0_txt,date_year,weapon_txt) %>%
@@ -248,3 +257,37 @@ ggplot(data = df, aes(x = mean1, y = var1)) +
   stat_poly_eq(aes(label = after_stat(eq.label))) +
   stat_poly_eq(label.y = 0.9) +
   geom_point()
+
+male_attackers = attackers_new %>%
+  filter(gender == "Male") %>%
+  inner_join(attacks_new, by =  "event_id") %>%
+  select(age_time_death,casualties,gender,birth_city)
+
+female_attackers = attackers_new %>%
+  filter(gender == "Female") %>%
+  inner_join(attacks_new, by =  "event_id") %>%
+  select(age_time_death,casualties,gender,birth_city)
+
+both_gender1 = bind_rows(male_attackers,female_attackers) %>%
+  select(gender,casualties,birth_city  )
+test <- wilcox.test(both_gender1$casualties ~ both_gender1$gender)
+
+ggplot(both_gender1, aes(x= casualties, color=gender)) +
+  geom_histogram(fill="white")
+
+world_man = read.csv("World_Male.csv")
+attacks_world_male =  attackers_new %>%
+  filter(gender == "Male") %>%
+  inner_join(attacks_new, by = "event_id") %>%
+  filter(country == birth_city) %>%
+  rename(Year = date_year) %>%
+  inner_join(world_man, by = "Year")
+
+t5= glm(casualties ~  age_time_death + Education_Index + GDP  + Unemployment_Male, data = attacks_world_male , family = "quasipoisson"	)
+
+summary(t5)
+
+cor.test(world_man$casualties,world_man$age_time_death, method="kendall")
+cor.test(world_man$casualties,world_man$Education_Index, method="kendall")
+cor.test(world_man$casualties,world_man$GDP, method="kendall")
+```
