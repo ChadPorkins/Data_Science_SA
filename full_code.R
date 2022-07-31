@@ -1,3 +1,4 @@
+#R packages
 library(tidyverse)
 library(tseries)
 library(car)
@@ -8,6 +9,7 @@ library(hrbrthemes)
 library(ggpubr)
 library(ggpmisc)
 
+#Data  cleaning
 attacks = read.csv("attacks.csv")
 head(as_tibble(attacks))
 
@@ -37,6 +39,7 @@ attackers_new = attackers %>%
 
 attackers_new
 
+#Normality test
 attacks_new %>%
   ggplot( aes(x=casualties)) +
   geom_histogram( binwidth=10, fill="#0afa4a", color="#fa0a0a", alpha=0.9) +
@@ -97,7 +100,7 @@ qqPlot(log(attacks_new$casualties+1),id= FALSE, ylab ="log values", main = "Q–
 
 mean(attacks_new$casualties) 
 var(attacks_new$casualties)
-
+#Quasi Poisson vs NB
 a = attacks_new %>%
   filter(casualties < 100)
 b = attacks_new %>%
@@ -144,7 +147,7 @@ ggplot(data = df, aes(x = mean1, y = var1)) +
   xlab("Mean of each group") + ylab("Variance of each group") +
   geom_point()
 
-
+#Data Visualization
 attacks_graph = attacks_new %>%
   left_join(attackers_new, by =  "event_id") %>%
   select(date_year,gender,country,weapon_txt) %>%
@@ -179,7 +182,7 @@ ggplot(NULL, aes(date_year, n)) +
   xlab("Year") + ylab("Number of attacks") + ggtitle("Suicide attacks 1982 - 2019 smooth (Male - Blue, Female - Red)") +
   theme_bw()
 
-###########################3
+#Weapons
 
 attacks_wepon = attacks_graph %>%
   count(weapon_txt) %>%
@@ -204,7 +207,7 @@ comb_wepons
 belt_bomb = prop.test(x = c(84, 314), n = c(155, 674), alternative = "greater")
 backpack_bomb = prop.test(x = c(4, 17), n = c(155, 674), alternative = "greater")
 
-
+#Wilcox
 male_attackers = attackers_new %>%
   filter(gender == "Male") %>%
   inner_join(attacks_new, by =  "event_id") %>%
@@ -240,7 +243,7 @@ test3
 ggplot(both_gender3, aes(x= casualties, color=gender)) +
   ggtitle(" Russian suicide attacks histogram - Male vs Female" ) +
   geom_histogram(fill="white")
-
+#cor and regression
 sri_lanka_male = read.csv("Sri_Lanka_Male.csv")
 sri_lanka_female = read.csv("Sri_Lanka_Female.csv")
 attacks_sri_lanka_man =  attackers_new %>%
@@ -342,4 +345,5 @@ cor.test(attacks_world_female$casualties,attacks_world_female$age_time_death, me
 cor.test(attacks_world_female$casualties,attacks_world_female$Education_Index, method="kendall")
 cor.test(attacks_world_female$casualties,attacks_world_female$GDP, method="kendall")
 cor.test(attacks_world_female$casualties,attacks_world_female$Unemployment_Female, method="kendall")
+
 
