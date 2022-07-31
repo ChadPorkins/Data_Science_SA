@@ -9,7 +9,7 @@ library(hrbrthemes)
 library(ggpubr)
 library(ggpmisc)
 
-#Data  cleaning
+#Data cleaning
 attacks = read.csv("attacks.csv")
 head(as_tibble(attacks))
 
