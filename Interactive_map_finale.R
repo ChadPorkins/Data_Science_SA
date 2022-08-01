@@ -1,24 +1,6 @@
----
-title: "Suicidal Attacks and Human Capital"
-author: "Jakob Alderson & Tal Bracha"
-date: "`1.08.2022`"
-output:
-  prettydoc::html_pretty:
-    theme: architect
-    highlight: github
----
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(leaflet)
 library(htmlwidgets)
-
-```
-
-## Interactive map of suicide attacks between 1982 and 2019
-
-```{r, message=FALSE, warning=FALSE}
 
 points = read.csv("attacks.csv")
 points = points[!is.na(points$latitude), ]
@@ -38,9 +20,4 @@ x = leaflet(data = points) %>%
                           
              ))
 
-```
-
-```{r}
-saveWidget(x, file="x.html")
-```
-
+saveWidget(x, file="Interactive_map_finale.html")
