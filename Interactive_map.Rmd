@@ -1,0 +1,40 @@
+---
+title: "Suicidal Attacks and Human Capital"
+author: "Jakob Alderson & Tal Bracha"
+date: "`1.08.2022`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(leaflet)
+
+```
+
+## Interactive map of suicide attacks between 1982 and 2019
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+points = read.csv("attacks.csv")
+points = points[!is.na(points$latitude), ]
+points = points[!is.na(points$longitude), ]
+
+leaflet(data = points) %>%
+  addTiles() %>%
+  addMarkers(lat=points$latitude, lng=points$longitude, clusterOptions = markerClusterOptions(),
+             popup= paste("<strong>Date: </strong>", points$date_day,"/",points$date_month,"/", points$date_year,
+                          "<br><br><strong>Place: </strong>", points$city_txt,"-",points$admin0_txt,
+                          "<br><strong>Killed_low_estimate: </strong>", points$killed_low,
+                          "<br><strong>Killed_high_estimate: </strong>", points$killed_high,
+                          "<br><strong>wounded_low_estimate: </strong>", points$wounded_low,
+                          "<br><strong>wounded_high_estimate: </strong>", points$wounded_high,
+                          "<br><strong>wepon: </strong>", points$weapon_txt
+                          
+                          
+             ))
+```
+
